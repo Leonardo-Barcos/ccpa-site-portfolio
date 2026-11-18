@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}Painel{% endblock %} — CCPA</title>
+  <link rel="icon" href="/static/img/logo-ccpa.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/static/css/ccpa.css">
+</head>
+<body>
+  {# Projeto de portfólio — não é o site oficial do clube. #}
+  <div class="aviso-portfolio" role="note">
+    {{ site.PORTFOLIO_NOTICE }} Site oficial:
+    <a href="{{ site.OFFICIAL_SITE }}" target="_blank" rel="noopener">ccpara.com.br</a>
+  </div>
+<div class="admin">
+  <nav class="admin__lateral" aria-label="Painel">
+    <h2>CCPA · Painel</h2>
+    <a href="/admin" {% if current_path == '/admin' %}aria-current="page"{% endif %}>Visão geral</a>
+    <a href="/admin/posts?tipo=NEWS" {% if current_path == '/admin/posts' %}aria-current="page"{% endif %}>Notícias e colunas</a>
+    <a href="/admin/eventos" {% if current_path.startswith('/admin/eventos') %}aria-current="page"{% endif %}>Eventos</a>
+    <a href="/admin/mensagens" {% if current_path == '/admin/mensagens' %}aria-current="page"{% endif %}>Mensagens</a>
+    <a href="/admin/associados" {% if current_path == '/admin/associados' %}aria-current="page"{% endif %}>Associados</a>
+    <a href="/" target="_blank" rel="noopener">Ver o site &nearr;</a>
+
+    <div class="conta">
+      <p style="margin:0 0 .6rem;color:#8f8f86">{{ user.name }}</p>
+      <form method="post" action="/admin/sair">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="btn btn--pequeno btn--contorno" type="submit"
+                style="color:#cfcfc6;border-color:#3a3a31">Sair</button>
+      </form>
+    </div>
+  </nav>
+
+  <div class="admin__conteudo">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+<script src="/static/js/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ 'Editar' if post else 'Nova publicação' }}{% endblock %}
+
+{% macro field_value(field, fallback='') -%}
+{{ form.get(field) if form.get(field) is not none else (post[field] if post and post[field] is not none else fallback) }}
+{%- endmacro %}
+
+{% block content %}
+<div class="admin__cabeca">
+  <h1>{{ 'Editar publicação' if post else ('Nova coluna' if kind.value == 'COLUMN' else 'Nova notícia') }}</h1>
+  <a class="btn btn--contorno btn--pequeno" href="/admin/posts?tipo={{ kind.value }}">Voltar</a>
+</div>
+
+{% if errors %}<div class="alerta">Confira os campos destacados abaixo.</div>{% endif %}
+
+<form method="post" action="/admin/posts/salvar" novalidate
+      style="background:var(--superficie);border:1px solid var(--linha);
+             border-radius:var(--raio-g);padding:1.8rem;max-width:860px">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <input type="hidden" name="kind" value="{{ kind.value }}">
+  {% if post %}<input type="hidden" name="post_id" value="{{ post.id }}">{% endif %}
+
+  <div class="linha">
+    <div class="campo c-12">
+      <label for="title"><span class="obrig">*</span>Título</label>
+      <input type="text" id="title" name="title" required
+             value="{{ field_value('title') }}"
+             {% if errors.get('title') %}aria-invalid="true"{% endif %}>
+      {% if errors.get('title') %}<p class="erro">{{ errors['title'] }}</p>{% endif %}
+    </div>
+
+    <div class="campo c-12">
+      <label for="summary"><span class="obrig">*</span>Resumo</label>
+      <input type="text" id="summary" name="summary" required maxlength="320"
+             value="{{ field_value('summary') }}"
+             {% if errors.get('summary') %}aria-invalid="true"{% endif %}>
+      <p class="ajuda">Aparece nos cartões da listagem e no compartilhamento em redes.</p>
+      {% if errors.get('summary') %}<p class="erro">{{ errors['summary'] }}</p>{% endif %}
+    </div>
+
+    <div class="campo c-4">
+      <label for="author"><span class="obrig">*</span>Autor</label>
+      <input type="text" id="author" name="author" required value="{{ field_value('author') }}">
+      {% if errors.get('author') %}<p class="erro">{{ errors['author'] }}</p>{% endif %}
+    </div>
+    <div class="campo c-4">
+      <label for="category">Categoria</label>
+      <input type="text" id="category" name="category" value="{{ field_value('category') }}"
+             list="sugestoes-categoria">
+      <datalist id="sugestoes-categoria">
+        <option value="Mercado"><option value="Design"><option value="Publicidade">
+        <option value="Eventos"><option value="Comunidade"><option value="Carreira">
+      </datalist>
+    </div>
+    <div class="campo c-4">
+      <label for="image_url">Imagem de capa (URL)</label>
+      <input type="url" id="image_url" name="image_url" value="{{ field_value('image_url') }}">
+      <p class="ajuda">Opcional. Cole o endereço de uma imagem já hospedada.</p>
+    </div>
+
+    <div class="campo c-12">
+      <label for="body"><span class="obrig">*</span>Texto</label>
+      <textarea id="body" name="body" required rows="18"
+                style="min-height:340px;font-family:var(--fonte-corpo)"
+                {% if errors.get('body') %}aria-invalid="true"{% endif %}>{{ field_value('body') }}</textarea>
+      <p class="ajuda">
+        Formatação: <code>## Título</code>, <code>### Subtítulo</code>,
+        <code>- item de lista</code>, <code>&gt; citação</code>,
+        <code>**negrito**</code>, <code>*itálico*</code>,
+        <code>[texto](https://link)</code>. Linha em branco separa parágrafos.
+      </p>
+      {% if errors.get('body') %}<p class="erro">{{ errors['body'] }}</p>{% endif %}
+    </div>
+  </div>
+
+  <div class="termos" style="margin:1.5rem 0">
+    <input type="checkbox" id="published" name="published"
+           {% if (form.get('published') == 'on') or (post and post.published and not form) %}checked{% endif %}>
+    <label for="published" style="font-weight:400">
+      <strong>Publicar no site.</strong> Desmarcado, fica salvo como rascunho e
+      ninguém de fora vê.
+    </label>
+  </div>
+
+  <div class="acoes-form">
+    <button class="btn btn--primario" type="submit">Salvar</button>
+  </div>
+</form>
+{% endblock %}

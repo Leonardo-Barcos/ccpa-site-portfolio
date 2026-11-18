@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Cadastro recebido{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="sucesso">
+    {% if member.status.value == 'ACTIVE' %}
+      <div class="selo">✓</div>
+      <h1 style="margin:0 0 .5rem">Associação confirmada!</h1>
+      <p>Pagamento recebido. Você já faz parte do Clube de Criativos do Pará —
+         enviamos os dados de acesso para <strong>{{ member.email }}</strong>.</p>
+    {% else %}
+      <div class="selo">✓</div>
+      <h1 style="margin:0 0 .5rem">Cadastro recebido, {{ member.first_name }}!</h1>
+      <p>Enviamos um e-mail para <strong>{{ member.email }}</strong> com o link de
+         pagamento. Sua associação é ativada assim que o pagamento for confirmado.</p>
+
+      <ol class="passos">
+        <li><strong>Confira seu e-mail.</strong> Se não estiver na caixa de entrada,
+            verifique spam ou promoções.</li>
+        <li><strong>Realize o pagamento</strong> pelo link enviado.
+            {% if plan.cycle == 'MENSAL' %}A cobrança é mensal e pode ser cancelada
+            a qualquer momento.{% endif %}</li>
+        <li><strong>Pronto.</strong> A confirmação chega em outro e-mail e libera sua
+            área do associado.</li>
+      </ol>
+    {% endif %}
+
+    <div class="resumo">
+      <dl>
+        <dt>Associado</dt><dd>{{ member.trade_name or member.name }}</dd>
+        <dt>Modalidade</dt><dd>{{ plan.name }}</dd>
+        <dt>Valor</dt><dd>R$ {{ plan.amount_brl }}{{ plan.cycle_label }}</dd>
+        {% if member.chapter %}<dt>Regional</dt><dd>{{ member.chapter }}</dd>{% endif %}
+        <dt>Login</dt><dd>{{ member.login }}</dd>
+        <dt>Protocolo</dt><dd>{{ member.id[:8]|upper }}</dd>
+      </dl>
+    </div>
+
+    {% if member.status.value != 'ACTIVE' and payment and payment.checkout_url %}
+    <a class="btn btn--primario" href="{{ payment.checkout_url }}">Ir para o pagamento agora</a>
+    {% endif %}
+    <p style="font-size:.85rem;color:var(--texto-suave);margin-top:1.5rem">
+      Problemas? Fale com a gente em
+      <a href="mailto:criativosdopara@gmail.com">criativosdopara@gmail.com</a>
+      informando o protocolo acima.
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Mensagens{% endblock %}
+
+{% block content %}
+<div class="admin__cabeca">
+  <div>
+    <h1>Mensagens</h1>
+    <p style="margin:0;color:var(--tinta-media)">
+      O que chega pelo formulário de contato do site.
+    </p>
+  </div>
+</div>
+
+{% if messages %}
+<div class="pilha">
+  {% for m in messages %}
+  <article style="background:var(--superficie);border:1px solid var(--linha);
+                  border-left:4px solid {{ 'var(--linha)' if m.read else 'var(--verde)' }};
+                  border-radius:var(--raio-g);padding:1.3rem 1.5rem">
+    <div style="display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:baseline;
+                justify-content:space-between">
+      <div>
+        <strong>{{ m.name }}</strong>
+        <span style="color:var(--tinta-fraca)"> &lt;<a href="mailto:{{ m.email }}">{{ m.email }}</a>&gt;</span>
+        {% if m.phone %}<span style="color:var(--tinta-fraca)"> · {{ m.phone }}</span>{% endif %}
+      </div>
+      <span style="color:var(--tinta-fraca);font-size:.84rem">
+        {{ m.created_at | short_date }} · {{ m.created_at | clock }}
+      </span>
+    </div>
+
+    <p style="margin:.6rem 0">
+      <span class="pilula {{ 'pilula--cinza' if m.read else '' }}">{{ m.subject }}</span>
+    </p>
+    <p style="white-space:pre-wrap;margin:0 0 1rem">{{ m.body }}</p>
+
+    <div class="acoes">
+      <a class="btn btn--pequeno btn--contorno"
+         href="mailto:{{ m.email }}?subject=Re: {{ m.subject }}">Responder</a>
+      <form method="post" action="/admin/mensagens/{{ m.id }}/lida">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="btn btn--pequeno {{ 'btn--contorno' if m.read else 'btn--preto' }}"
+                type="submit">
+          {{ 'Marcar como não lida' if m.read else 'Marcar como lida' }}
+        </button>
+      </form>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="vazio">
+  <h3>Nenhuma mensagem ainda</h3>
+  <p>Quando alguém escrever pelo formulário de contato, aparece aqui.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Sobre nós{% endblock %}
+{% block description %}Quem é o Clube de Criativos do Pará, o que faz e como se organiza pelo estado.{% endblock %}
+
+{% block content %}
+<section class="hero hero--pagina">
+  <div class="container">
+    <span class="olho">Sobre nós</span>
+    <h1>Muita coisa boa é criada aqui.<br><em>Quase nada fica registrado.</em></h1>
+  </div>
+</section>
+
+<section class="secao">
+  <div class="container">
+    <div class="medida" style="margin-inline:auto">
+      <p style="font-size:1.15rem;color:var(--tinta-media)">{{ site.ABOUT_INTRO }}</p>
+
+      {% for heading, text in site.ABOUT_SECTIONS %}
+      <h2 style="margin-top:2.5rem">{{ heading }}</h2>
+      <p>{{ text }}</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="secao secao--areia">
+  <div class="container">
+    <div class="secao__cabeca">
+      <div>
+        <span class="olho olho--escuro">Para quem é</span>
+        <h2>O clube não é só de publicitário</h2>
+      </div>
+      <p>Se o seu trabalho depende de criar alguma coisa, você cabe aqui.</p>
+    </div>
+    <div class="grade">
+      {% for block in site.WHO_ITS_FOR %}
+      <article class="card {{ block.color }}">
+        <h3>{{ block.title }}</h3>
+        <p>{{ block.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="secao">
+  <div class="container">
+    <div class="secao__cabeca">
+      <div>
+        <span class="olho olho--escuro">Onde estamos</span>
+        <h2>Três regionais, um estado</h2>
+      </div>
+      <p>A criatividade paraense não começa nem termina em Belém.</p>
+    </div>
+    <div class="grade">
+      {% for nome, texto in site.CHAPTER_BLURBS %}
+      <article class="card {{ ['verde','vermelho','azul'][loop.index0 % 3] }}">
+        <h3>{{ label }}</h3>
+        <p>{{ text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="secao secao--preta">
+  <div class="container centro">
+    <h2>Pronto para fazer parte?</h2>
+    <p style="max-width:52ch;margin-inline:auto">
+      A associação é mensal, cabe no bolso e dá acesso aos encontros de negócios,
+      às avaliações e aos descontos do clube.
+    </p>
+    <div class="hero__acoes" style="justify-content:center">
+      <a class="btn btn--verde" href="/associe-se">Ver os planos</a>
+      <a class="btn btn--fantasma" href="/contato">Falar com a gente</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

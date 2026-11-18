@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Checkout (simulado){% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="sucesso">
+    <p style="background:#fffbe6;border-left:4px solid var(--amarelo);padding:.8rem 1rem;border-radius:6px;font-size:.85rem">
+      <strong>Ambiente de teste.</strong> Esta tela só existe com
+      <code>PAYMENT_PROVIDER=mock</code> e simula o checkout do gateway.
+    </p>
+    <h1 style="margin:.5rem 0">Pagamento da associação</h1>
+    <div class="resumo">
+      <dl>
+        <dt>Associado</dt><dd>{{ member.trade_name or member.name }}</dd>
+        <dt>Plano</dt><dd>{{ plan.name }}</dd>
+        <dt>Valor</dt><dd>R$ {{ plan.amount_brl }}{{ plan.cycle_label }}</dd>
+      </dl>
+    </div>
+    <form method="post" action="/pagamento/simulado/{{ member.id }}/confirmar">
+      <button class="btn btn--verde" type="submit">Simular pagamento aprovado</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

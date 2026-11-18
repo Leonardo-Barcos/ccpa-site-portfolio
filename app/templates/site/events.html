@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Eventos{% endblock %}
+{% block description %}Agenda de encontros, rodadas de negócios e atividades do Clube de Criativos do Pará.{% endblock %}
+
+{% block content %}
+<section class="hero hero--pagina">
+  <div class="container">
+    <span class="olho">Eventos</span>
+    <h1>A agenda do clube</h1>
+    <p>Encontros mensais de negócios, rodadas de conversa e atividades abertas
+       nas três regionais.</p>
+  </div>
+</section>
+
+<section class="secao">
+  <div class="container">
+    <div class="secao__cabeca">
+      <h2 style="font-size:1.5rem">Próximos</h2>
+    </div>
+    {% if upcoming %}
+      {% for event in upcoming %}
+        {% with past = False %}{% include "site/_event_row.html" %}{% endwith %}
+      {% endfor %}
+    {% else %}
+    <div class="vazio">
+      <h3>Nenhum evento marcado no momento</h3>
+      <p>Acompanhe as <a href="{{ site.SOCIAL_LINKS[0][1] }}" target="_blank" rel="noopener">redes do clube</a>
+         ou <a href="/associe-se">associe-se</a> para receber os convites por e-mail.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% if past %}
+<section class="secao secao--areia">
+  <div class="container">
+    <div class="secao__cabeca">
+      <h2 style="font-size:1.5rem">Já aconteceram</h2>
+    </div>
+    {% for event in past %}
+      {% with past = True %}{% include "site/_event_row.html" %}{% endwith %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

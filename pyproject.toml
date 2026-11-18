@@ -1,0 +1,35 @@
+[project]
+name = "ccpa-associados"
+version = "1.0.0"
+description = "Página de associados do Clube de Criativos do Pará"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 90
+target-version = "py311"
+exclude = [".venv", "__pycache__", "preview"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # erros de estilo (pycodestyle)
+    "F",    # erros reais: nome indefinido, import não usado, f-string sem campo
+    "W",    # avisos
+    "I",    # ordem dos imports
+    "B",    # bugs comuns (flake8-bugbear)
+    "UP",   # sintaxe antiga que já tem versão moderna
+    "C4",   # comprehensions ineficientes
+    "SIM",  # simplificações óbvias
+]
+ignore = [
+    "E501",  # comprimento de linha — o formatador já cuida
+    "B008",  # Depends() no argumento padrão é o jeito do FastAPI
+    "UP042", # (str, Enum) é proposital: o SQLAlchemy grava o valor como texto
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E402"]  # os testes ajustam variáveis de ambiente antes dos imports
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]

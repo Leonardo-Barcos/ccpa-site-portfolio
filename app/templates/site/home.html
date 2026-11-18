@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Clube de Criativos do Pará{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <span class="olho">Associação da cadeia criativa paraense</span>
+    <h1>A criatividade do Pará<br>merece <em>ficar registrada</em>.</h1>
+    <p>{{ site.SHORT_DESCRIPTION }}</p>
+    <div class="hero__acoes">
+      <a class="btn btn--verde" href="/associe-se">Quero me associar</a>
+      <a class="btn btn--fantasma" href="/sobre">Conheça o clube</a>
+    </div>
+  </div>
+</section>
+
+<section class="secao">
+  <div class="container">
+    <div class="secao__cabeca">
+      <div>
+        <span class="olho olho--escuro">O que o clube faz</span>
+        <h2>Quatro verbos, um propósito</h2>
+      </div>
+      <p>Não somos um grupo de WhatsApp com nome bonito. Cada uma dessas frentes
+         tem gente trabalhando e resultado para mostrar.</p>
+    </div>
+    <div class="grade">
+      {% for block in site.WHAT_WE_DO %}
+      <article class="card {{ block.color }}">
+        <h3>{{ block.title }}</h3>
+        <p>{{ block.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if featured or news %}
+<section class="secao secao--areia">
+  <div class="container">
+    <div class="secao__cabeca">
+      <div>
+        <span class="olho olho--escuro">Notícias</span>
+        <h2>O que está acontecendo</h2>
+      </div>
+      <a class="btn btn--contorno btn--pequeno" href="/noticias">Ver todas</a>
+    </div>
+
+    {% if featured %}
+    <a class="destaque" href="/noticias/{{ featured.slug }}">
+      {% if featured.image_url %}
+      <img src="{{ featured.image_url }}" alt="">
+      {% else %}
+      <div class="capa-marca" style="min-height:280px" aria-hidden="true"></div>
+      {% endif %}
+      <div class="destaque__corpo">
+        <span class="pilula">{{ featured.category or 'Notícia' }}</span>
+        <h3 style="font-size:1.7rem;margin:.7rem 0 .5rem">{{ featured.title }}</h3>
+        <p style="color:var(--tinta-media)">{{ featured.summary }}</p>
+        <p class="post-card__meta" style="margin-top:1rem">
+          {{ featured.author }} · {{ featured.published_at | long_date }}
+        </p>
+      </div>
+    </a>
+    {% endif %}
+
+    {% if news %}
+    <div class="posts mt-g">
+      {% for post in news %}
+      {% include "site/_post_card.html" %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% if events %}
+<section class="secao">
+  <div class="container">
+    <div class="secao__cabeca">
+      <div>
+        <span class="olho olho--escuro">Agenda</span>
+        <h2>Próximos encontros</h2>
+      </div>
+      <a class="btn btn--contorno btn--pequeno" href="/eventos">Agenda completa</a>
+    </div>
+    {% for event in events %}
+    {% include "site/_event_row.html" %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="secao secao--preta">
+  <div class="container">
+    <div class="secao__cabeca">
+      <div>
+        <span class="olho">Associe-se</span>
+        <h2>Três formas de fazer parte</h2>
+      </div>
+      <a class="btn btn--verde btn--pequeno" href="/associe-se">Ver os planos</a>
+    </div>
+    <div class="grade">
+      {% for plan in plans %}
+      <article class="card {{ ['verde','vermelho','azul'][loop.index0 % 3] }}">
+        <h3>{{ plan.name }}</h3>
+        <p class="plano__preco" style="margin:.4rem 0 .6rem">
+          R$ {{ plan.amount_brl }}<small>{{ plan.cycle_label }}</small>
+        </p>
+        <p>{{ plan.description }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if columns %}
+<section class="secao">
+  <div class="container">
+    <div class="secao__cabeca">
+      <div>
+        <span class="olho olho--escuro">Colunas</span>
+        <h2>Quem escreve por aqui</h2>
+      </div>
+      <a class="btn btn--contorno btn--pequeno" href="/colunas">Ver todas</a>
+    </div>
+    <div class="posts">
+      {% for post in columns %}
+      {% with %}{% include "site/_post_card.html" %}{% endwith %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="secao secao--areia">
+  <div class="container">
+    <div class="numeros">
+      {% for value, label in site.HIGHLIGHT_NUMBERS %}
+      <div><b>{{ value }}</b><span>{{ label }}</span></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

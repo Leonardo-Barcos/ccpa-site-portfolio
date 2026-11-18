@@ -1,0 +1,20 @@
+# Dependências para rodar a aplicação (desenvolvimento e produção com SQLite).
+# Versões com ">=" para funcionar em qualquer Python 3.11+.
+# Para PostgreSQL em produção, instale também: pip install -r requirements-prod.txt
+
+fastapi>=0.115
+uvicorn[standard]>=0.34
+jinja2>=3.1
+python-multipart>=0.0.20
+pydantic>=2.10
+pydantic-settings>=2.7
+email-validator>=2.2
+sqlalchemy>=2.0.36
+alembic>=1.14
+argon2-cffi>=23.1
+httpx>=0.28
+itsdangerous>=2.2
+slowapi>=0.1.9
+python-dotenv>=1.0
+tzdata>=2024.1        # banco de fusos horários (o Windows não traz)
+pytest>=8.3

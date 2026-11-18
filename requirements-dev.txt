@@ -1,0 +1,2 @@
+# Ferramentas de verificação. Não vão para o servidor.
+ruff>=0.9

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site.NAME }}{% endblock %} — CCPA</title>
+  <meta name="description" content="{% block description %}{{ site.SHORT_DESCRIPTION }}{% endblock %}">
+  <meta property="og:site_name" content="CCPA — {{ site.NAME }}">
+  <meta property="og:title" content="{{ self.title() }}">
+  <meta property="og:description" content="{{ self.description() }}">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="{{ base_url }}/static/img/logo-ccpa.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/static/img/logo-ccpa.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <link rel="stylesheet" href="/static/css/ccpa.css">
+</head>
+<body>
+  {# Projeto de portfólio — não é o site oficial do clube. #}
+  <div class="aviso-portfolio" role="note">
+    {{ site.PORTFOLIO_NOTICE }} Site oficial:
+    <a href="{{ site.OFFICIAL_SITE }}" target="_blank" rel="noopener">ccpara.com.br</a>
+  </div>
+  <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <div class="container topo__inner">
+      <a class="topo__logo" href="/">
+        <img src="/static/img/logo-ccpa.png" alt="Clube de Criativos do Pará">
+        <span>Clube de Criativos<br>do Pará</span>
+      </a>
+
+      <button class="menu__botao" type="button" aria-expanded="false"
+              aria-controls="menu-principal" aria-label="Abrir menu">
+        <i></i><i></i><i></i>
+      </button>
+
+      <nav aria-label="Principal">
+        <ul class="menu" id="menu-principal">
+          {% for label, href in site.NAV %}
+          <li>
+            <a href="{{ href }}"
+               {% if current_path == href %}aria-current="page"{% endif %}>{{ label }}</a>
+          </li>
+          {% endfor %}
+          <li>
+            <a class="btn btn--primario btn--pequeno" href="/associe-se">Associe-se</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="faixa" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  </header>
+
+  <main id="conteudo">{% block content %}{% endblock %}</main>
+
+  <footer class="rodape">
+    <div class="container">
+      <div class="rodape__grade">
+        <div class="rodape__marca">
+          <img src="/static/img/logo-ccpa.png" alt="">
+          <p>{{ site.SHORT_DESCRIPTION }}</p>
+          <div class="redes">
+            {% for label, url in site.SOCIAL_LINKS %}
+            <a href="{{ url }}" target="_blank" rel="noopener">{{ label }}</a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div>
+          <h4>Navegue</h4>
+          <ul>
+            {% for label, href in site.NAV %}
+            <li><a href="{{ href }}">{{ label }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div>
+          <h4>Associe-se</h4>
+          <ul>
+            <li><a href="/associe-se?tipo=pf">Estudante</a></li>
+            <li><a href="/associe-se?tipo=pf">Profissional</a></li>
+            <li><a href="/associe-se?tipo=pj">Empresa</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Regionais</h4>
+          <ul>
+            {% for label, _ in site.CHAPTER_BLURBS %}
+            <li>{{ label }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div>
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="mailto:{{ site.EMAIL }}">{{ site.EMAIL }}</a></li>
+            <li><a href="/contato">Fale com a gente</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rodape__fim">
+        <span>&copy; {{ year }} {{ site.NAME }}. Todos os direitos reservados.</span>
+        <span>Mantenedor:
+          <a href="{{ site.SPONSOR_URL }}" target="_blank" rel="noopener">Mangacode</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/site.js" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

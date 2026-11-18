@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Contato{% endblock %}
+{% block description %}Fale com o Clube de Criativos do Pará: associação, parcerias, imprensa e eventos.{% endblock %}
+
+{% block content %}
+<section class="hero hero--pagina">
+  <div class="container">
+    <span class="olho">Contato</span>
+    <h1>Fale com a gente</h1>
+    <p>Dúvida sobre associação, proposta de parceria, pauta de imprensa —
+       chega tudo na mesma caixa e a gente responde.</p>
+  </div>
+</section>
+
+<section class="secao">
+  <div class="container">
+    <div class="grade grade--2" style="align-items:start">
+      <div>
+        {% if sent %}
+        <div class="alerta alerta--ok">
+          <strong>Mensagem enviada.</strong> Obrigado por escrever — respondemos
+          no e-mail que você informou, normalmente em até dois dias úteis.
+        </div>
+        {% endif %}
+
+        <form method="post" action="/contato" novalidate>
+          <div class="linha">
+            <div class="campo c-6">
+              <label for="name"><span class="obrig">*</span>Nome</label>
+              <input type="text" id="name" name="name" required
+                     value="{{ form.get('name', '') }}"
+                     {% if errors.get('name') %}aria-invalid="true"{% endif %}>
+              {% if errors.get('name') %}<p class="erro">{{ errors['name'] }}</p>{% endif %}
+            </div>
+            <div class="campo c-6">
+              <label for="email"><span class="obrig">*</span>E-mail</label>
+              <input type="email" id="email" name="email" required
+                     value="{{ form.get('email', '') }}"
+                     {% if errors.get('email') %}aria-invalid="true"{% endif %}>
+              {% if errors.get('email') %}<p class="erro">{{ errors['email'] }}</p>{% endif %}
+            </div>
+            <div class="campo c-6">
+              <label for="phone">Telefone / WhatsApp</label>
+              <input type="tel" id="phone" name="phone"
+                     value="{{ form.get('phone', '') }}">
+            </div>
+            <div class="campo c-6">
+              <label for="subject"><span class="obrig">*</span>Assunto</label>
+              <select id="subject" name="subject" required
+                      {% if errors.get('subject') %}aria-invalid="true"{% endif %}>
+                <option value="">Selecione...</option>
+                {% for a in site.CONTACT_SUBJECTS %}
+                <option value="{{ a }}" {% if form.get('subject') == a %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+              </select>
+              {% if errors.get('subject') %}<p class="erro">{{ errors['subject'] }}</p>{% endif %}
+            </div>
+            <div class="campo c-12">
+              <label for="message"><span class="obrig">*</span>Mensagem</label>
+              <textarea id="message" name="message" required
+                        {% if errors.get('message') %}aria-invalid="true"{% endif %}>{{ form.get('message', '') }}</textarea>
+              {% if errors.get('message') %}<p class="erro">{{ errors['message'] }}</p>{% endif %}
+            </div>
+          </div>
+
+          <!-- Armadilha para robôs: fica escondida e humano nunca preenche. -->
+          <div class="sr-only" aria-hidden="true">
+            <label for="website">Não preencha este campo</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="acoes-form" style="justify-content:flex-start">
+            <button class="btn btn--primario" type="submit">Enviar mensagem</button>
+          </div>
+        </form>
+      </div>
+
+      <aside class="pilha">
+        <div class="card">
+          <h3>E-mail direto</h3>
+          <p><a href="mailto:{{ site.EMAIL }}">{{ site.EMAIL }}</a></p>
+        </div>
+        <div class="card vermelho">
+          <h3>Quer se associar?</h3>
+          <p>O cadastro leva dois minutos e já mostra os valores de cada
+             categoria.</p>
+          <p style="margin-top:.9rem">
+            <a class="btn btn--primario btn--pequeno" href="/associe-se">Ir para a associação</a>
+          </p>
+        </div>
+        <div class="card azul">
+          <h3>Redes do clube</h3>
+          <div class="talento__tags" style="margin-top:.5rem">
+            {% for label, url in site.SOCIAL_LINKS %}
+            <a class="pilula pilula--cinza" href="{{ url }}" target="_blank"
+               rel="noopener" style="text-decoration:none">{{ label }}</a>
+            {% endfor %}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

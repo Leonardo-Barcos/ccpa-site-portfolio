@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Banco de Talentos{% endblock %}
+{% block description %}Encontre profissionais e estudantes criativos associados ao CCPA, por regional e especialidade.{% endblock %}
+
+{% block content %}
+<section class="hero hero--pagina">
+  <div class="container">
+    <span class="olho">Banco de Talentos</span>
+    <h1>Quem faz criatividade no Pará</h1>
+    <p>Profissionais e estudantes associados ao clube, prontos para trabalhar.
+       Quer aparecer aqui? <a href="/associe-se" style="color:var(--verde)">Associe-se</a>.</p>
+  </div>
+</section>
+
+<section class="secao">
+  <div class="container">
+    <form class="busca" method="get" action="/talentos" role="search">
+      <label class="sr-only" for="q">Buscar por nome, cargo ou empresa</label>
+      <input type="search" id="q" name="q" value="{{ search }}"
+             placeholder="Nome, cargo ou empresa (ex.: ilustrador)">
+      <label class="sr-only" for="chapter">Regional</label>
+      <select id="chapter" name="chapter">
+        <option value="">Todas as regionais</option>
+        {% for r in chapters %}
+        <option value="{{ r }}" {% if r == active_chapter %}selected{% endif %}>{{ r }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn btn--preto" type="submit">Buscar</button>
+      {% if search or active_chapter %}
+      <a class="btn btn--contorno" href="/talentos">Limpar</a>
+      {% endif %}
+    </form>
+
+    {% if people %}
+    <p style="color:var(--tinta-fraca);font-size:.9rem">
+      {{ people|length }} profissional{{ 'is' if people|length != 1 else '' }} encontrado{{ 's' if people|length != 1 else '' }}.
+    </p>
+    <div class="grade">
+      {% for person in people %}
+      <article class="talento">
+        <span class="talento__inicial" aria-hidden="true">{{ person.name[0]|upper }}</span>
+        <h3>{{ person.name }}</h3>
+        {% if person.role %}<p>{{ person.role }}</p>{% endif %}
+        {% if person.company %}<p style="color:var(--tinta-fraca)">{{ person.company }}</p>{% endif %}
+        <div class="talento__tags">
+          {% if person.chapter %}<span class="pilula pilula--azul">{{ person.chapter }}</span>{% endif %}
+          <span class="pilula">{{ 'Estudante' if person.plan_code == 'ESTUDANTE' else 'Profissional' }}</span>
+        </div>
+        {% if person.linkedin %}
+        <p style="margin-top:.5rem">
+          <a href="{{ person.linkedin }}" target="_blank" rel="noopener">Ver LinkedIn &rarr;</a>
+        </p>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="vazio">
+      <h3>Nenhum talento nessa busca</h3>
+      {% if search or active_chapter %}
+      <p>Tente outras palavras ou <a href="/talentos">veja todo mundo</a>.</p>
+      {% else %}
+      <p>O banco é formado pelos associados com a mensalidade em dia.
+         <a href="/associe-se">Associe-se</a> para ser o primeiro perfil aqui.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <p style="margin-top:2.5rem;font-size:.85rem;color:var(--tinta-fraca)">
+      Exibimos apenas nome, atuação e regional. E-mail, telefone e documentos dos
+      associados nunca aparecem nesta página.
+    </p>
+  </div>
+</section>
+{% endblock %}

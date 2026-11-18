@@ -1,0 +1,101 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ 'Editar event' if event else 'Novo event' }}{% endblock %}
+
+{% macro field_value(field, fallback='') -%}
+{{ form.get(field) if form.get(field) is not none else (event[field] if event and event[field] is not none else fallback) }}
+{%- endmacro %}
+
+{% block content %}
+<div class="admin__cabeca">
+  <h1>{{ 'Editar event' if event else 'Novo event' }}</h1>
+  <a class="btn btn--contorno btn--pequeno" href="/admin/eventos">Voltar</a>
+</div>
+
+{% if errors %}<div class="alerta">Confira os campos destacados abaixo.</div>{% endif %}
+
+<form method="post" action="/admin/eventos/salvar" novalidate
+      style="background:var(--superficie);border:1px solid var(--linha);
+             border-radius:var(--raio-g);padding:1.8rem;max-width:860px">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  {% if event %}<input type="hidden" name="event_id" value="{{ event.id }}">{% endif %}
+
+  <div class="linha">
+    <div class="campo c-12">
+      <label for="title"><span class="obrig">*</span>Título</label>
+      <input type="text" id="title" name="title" required value="{{ field_value('title') }}"
+             {% if errors.get('title') %}aria-invalid="true"{% endif %}>
+      {% if errors.get('title') %}<p class="erro">{{ errors['title'] }}</p>{% endif %}
+    </div>
+
+    <div class="campo c-12">
+      <label for="summary"><span class="obrig">*</span>Resumo</label>
+      <input type="text" id="summary" name="summary" required maxlength="320"
+             value="{{ field_value('summary') }}"
+             {% if errors.get('summary') %}aria-invalid="true"{% endif %}>
+      {% if errors.get('summary') %}<p class="erro">{{ errors['summary'] }}</p>{% endif %}
+    </div>
+
+    <div class="campo c-4">
+      <label for="starts_at"><span class="obrig">*</span>Início</label>
+      <input type="datetime-local" id="starts_at" name="starts_at" required
+             value="{{ form.get('starts_at') or (event.starts_at | datetime_input if event else '') }}"
+             {% if errors.get('starts_at') %}aria-invalid="true"{% endif %}>
+      {% if errors.get('starts_at') %}<p class="erro">{{ errors['starts_at'] }}</p>{% endif %}
+    </div>
+    <div class="campo c-4">
+      <label for="venue"><span class="obrig">*</span>Local</label>
+      <input type="text" id="venue" name="venue" required value="{{ field_value('venue') }}"
+             placeholder="Ex.: Sede do CCPA">
+      {% if errors.get('venue') %}<p class="erro">{{ errors['venue'] }}</p>{% endif %}
+    </div>
+    <div class="campo c-4">
+      <label for="city">Cidade</label>
+      <input type="text" id="city" name="city" value="{{ field_value('city') }}">
+    </div>
+
+    <div class="campo c-4">
+      <label for="chapter">Regional</label>
+      <select id="chapter" name="chapter">
+        <option value="">Todas / não se aplica</option>
+        {% for r in chapters %}
+        <option value="{{ r }}" {% if field_value('chapter') == r %}selected{% endif %}>{{ r }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="campo c-4">
+      <label for="signup_url">Link de inscrição</label>
+      <input type="url" id="signup_url" name="signup_url" value="{{ field_value('signup_url') }}">
+    </div>
+    <div class="campo c-4">
+      <label for="image_url">Imagem (URL)</label>
+      <input type="url" id="image_url" name="image_url" value="{{ field_value('image_url') }}">
+    </div>
+
+    <div class="campo c-12">
+      <label for="description">Descrição</label>
+      <textarea id="description" name="description" rows="12">{{ field_value('description') }}</textarea>
+      <p class="ajuda">
+        Mesma formatação das notícias: <code>## Título</code>, <code>- lista</code>,
+        <code>**negrito**</code>, <code>[link](https://…)</code>.
+      </p>
+    </div>
+  </div>
+
+  <div class="termos" style="margin:1rem 0 .5rem">
+    <input type="checkbox" id="free" name="free"
+           {% if (form.get('free') == 'on') or (event and event.free and not form) or (not event and not form) %}checked{% endif %}>
+    <label for="free" style="font-weight:400">Evento gratuito</label>
+  </div>
+  <div class="termos" style="margin-bottom:1.5rem">
+    <input type="checkbox" id="published" name="published"
+           {% if (form.get('published') == 'on') or (event and event.published and not form) %}checked{% endif %}>
+    <label for="published" style="font-weight:400">
+      <strong>Publicar no site.</strong> Desmarcado, fica só como rascunho.
+    </label>
+  </div>
+
+  <div class="acoes-form">
+    <button class="btn btn--primario" type="submit">Salvar</button>
+  </div>
+</form>
+{% endblock %}

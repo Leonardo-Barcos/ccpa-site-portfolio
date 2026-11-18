@@ -1,0 +1,16 @@
+<a class="evento-linha {{ 'event-linha--past' if past else '' }}"
+   href="/eventos/{{ event.slug }}">
+  <div class="evento-data">
+    <b>{{ event.starts_at | day_number }}</b>
+    <span>{{ event.starts_at | short_month }}</span>
+  </div>
+  <div>
+    <h3>{{ event.title }}</h3>
+    <p>
+      {{ event.starts_at | clock }} · {{ event.venue }}{% if event.city %}, {{ event.city }}{% endif %}
+    </p>
+  </div>
+  <span class="pilula {{ 'pilula--cinza' if past else '' }}">
+    {{ 'Realizado' if past else ('Gratuito' if event.free else 'Pago') }}
+  </span>
+</a>

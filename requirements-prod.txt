@@ -1,0 +1,5 @@
+# Só é necessário em produção, quando DATABASE_URL apontar para PostgreSQL.
+# Em desenvolvimento o banco é SQLite e nada disso precisa ser instalado.
+
+psycopg[binary]>=3.2
+gunicorn>=23.0

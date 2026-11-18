@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block description %}{{ post.summary }}{% endblock %}
+
+{% block content %}
+<article class="secao">
+  <div class="container">
+    <div class="artigo">
+      <a class="voltar" href="{{ back_url }}">&larr; {{ back_label }}</a>
+
+      {% if post.category %}<span class="pilula">{{ post.category }}</span>{% endif %}
+      <h1 style="font-size:clamp(1.9rem,4vw,2.9rem);margin:.8rem 0 .6rem">
+        {{ post.title }}
+      </h1>
+      <p style="font-size:1.14rem;color:var(--tinta-media)">{{ post.summary }}</p>
+
+      <div class="artigo__meta">
+        <span>Por <strong>{{ post.author }}</strong></span>
+        <span>{{ post.published_at | long_date }}</span>
+      </div>
+
+      {% if post.image_url %}
+      <img class="artigo__capa" src="{{ post.image_url }}" alt="">
+      {% endif %}
+
+      <div class="artigo__corpo">{{ body | safe }}</div>
+    </div>
+  </div>
+</article>
+
+{% if related %}
+<section class="secao secao--areia">
+  <div class="container">
+    <div class="secao__cabeca">
+      <h2 style="font-size:1.5rem">Continue lendo</h2>
+    </div>
+    <div class="posts">
+      {% for post in related %}
+      {% include "site/_post_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

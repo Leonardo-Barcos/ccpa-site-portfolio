@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }}{% endblock %}
+{% block description %}{{ event.summary }}{% endblock %}
+
+{% block content %}
+<article class="secao">
+  <div class="container">
+    <div class="artigo">
+      <a class="voltar" href="/eventos">&larr; Agenda completa</a>
+
+      <span class="pilula">{{ 'Gratuito' if event.free else 'Pago' }}</span>
+      {% if event.chapter %}<span class="pilula pilula--azul">{{ event.chapter }}</span>{% endif %}
+
+      <h1 style="font-size:clamp(1.9rem,4vw,2.9rem);margin:.8rem 0 .6rem">
+        {{ event.title }}
+      </h1>
+      <p style="font-size:1.14rem;color:var(--tinta-media)">{{ event.summary }}</p>
+
+      <div class="numeros" style="margin:2rem 0">
+        <div>
+          <b style="font-size:1.4rem">{{ event.starts_at | short_date }}</b>
+          <span>Data</span>
+        </div>
+        <div>
+          <b style="font-size:1.4rem">{{ event.starts_at | clock }}</b>
+          <span>Horário</span>
+        </div>
+        <div>
+          <b style="font-size:1.15rem">{{ event.venue }}</b>
+          <span>{{ event.city or 'Local' }}</span>
+        </div>
+      </div>
+
+      {% if event.image_url %}
+      <img class="artigo__capa" src="{{ event.image_url }}" alt="">
+      {% endif %}
+
+      <div class="artigo__corpo">{{ body | safe }}</div>
+
+      {% if event.signup_url %}
+      <p style="margin-top:2rem">
+        <a class="btn btn--primario" href="{{ event.signup_url }}"
+           target="_blank" rel="noopener">Fazer inscrição</a>
+      </p>
+      {% endif %}
+    </div>
+  </div>
+</article>
+{% endblock %}

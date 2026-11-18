@@ -1,0 +1,16 @@
+{% set folder = 'colunas' if post.kind.value == 'COLUMN' else 'noticias' %}
+<a class="post-card" href="/{{ folder }}/{{ post.slug }}">
+  {% if post.image_url %}
+  <img class="post-card__capa" src="{{ post.image_url }}" alt="" loading="lazy">
+  {% else %}
+  <div class="post-card__capa capa-marca" aria-hidden="true"></div>
+  {% endif %}
+  <div class="post-card__corpo">
+    {% if post.category %}<span class="pilula">{{ post.category }}</span>{% endif %}
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.summary }}</p>
+    <span class="post-card__meta">
+      {{ post.author }} · {{ post.published_at | long_date }}
+    </span>
+  </div>
+</a>

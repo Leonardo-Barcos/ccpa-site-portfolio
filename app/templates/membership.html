@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+{% block title %}Associe-se{% endblock %}
+{% block description %}Associe-se ao Clube de Criativos do Pará como estudante, profissional ou empresa.{% endblock %}
+
+{#
+  `sfx` suffixes every id, because both signup forms live on the same page and
+  duplicate ids would break the <label for=...> association.
+#}
+{% macro field(name, label, width="c-4", sfx="", type="text", required=False,
+               hint=None, inputmode=None, maxlength=None, autocomplete=None) %}
+<div class="campo {{ width }}">
+  <label for="{{ name }}_{{ sfx }}">
+    {% if required %}<span class="obrig" aria-hidden="true">*</span>{% endif %}{{ label }}
+  </label>
+  <input type="{{ type }}" id="{{ name }}_{{ sfx }}" name="{{ name }}"
+         value="{{ form.get(name, '') }}"
+         {% if required %}required{% endif %}
+         {% if inputmode %}inputmode="{{ inputmode }}"{% endif %}
+         {% if maxlength %}maxlength="{{ maxlength }}"{% endif %}
+         {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+         {% if errors.get(name) %}aria-invalid="true" aria-describedby="e-{{ name }}_{{ sfx }}"{% endif %}>
+  {% if hint %}<p class="ajuda">{{ hint }}</p>{% endif %}
+  {% if errors.get(name) %}
+  <p class="erro" id="e-{{ name }}_{{ sfx }}">{{ errors[name] }}</p>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro select(name, label, options, width="c-4", sfx="", required=False,
+                hint=None, blank="Selecione...") %}
+<div class="campo {{ width }}">
+  <label for="{{ name }}_{{ sfx }}">
+    {% if required %}<span class="obrig" aria-hidden="true">*</span>{% endif %}{{ label }}
+  </label>
+  <select id="{{ name }}_{{ sfx }}" name="{{ name }}" {% if required %}required{% endif %}
+          {% if errors.get(name) %}aria-invalid="true"{% endif %}>
+    <option value="">{{ blank }}</option>
+    {% for option in options %}
+    <option value="{{ option }}" {% if form.get(name) == option %}selected{% endif %}>
+      {{ option }}
+    </option>
+    {% endfor %}
+  </select>
+  {% if hint %}<p class="ajuda">{{ hint }}</p>{% endif %}
+  {% if errors.get(name) %}<p class="erro">{{ errors[name] }}</p>{% endif %}
+</div>
+{% endmacro %}
+
+{% macro credentials_block(sfx) %}
+<fieldset>
+  <legend>Acesso à área do associado</legend>
+  <div class="linha">
+    {{ field("login", "Login", "c-4", required=True, sfx=sfx,
+             hint="Mínimo 4 caracteres. Letras, números, ponto, hífen e underline.",
+             autocomplete="username") }}
+    {{ field("password", "Senha", "c-4", type="password", required=True, sfx=sfx,
+             hint="Mínimo 8 caracteres, com letra e número.",
+             autocomplete="new-password") }}
+    {{ field("password_confirmation", "Confirmar senha", "c-4", type="password",
+             required=True, sfx=sfx, autocomplete="new-password") }}
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Termos de adesão</legend>
+  <div class="termos">
+    <input type="checkbox" id="accepted_terms_{{ sfx }}" name="accepted_terms"
+           {% if form.get('accepted_terms') %}checked{% endif %} required>
+    <label for="accepted_terms_{{ sfx }}" style="font-weight:400">
+      <span class="obrig" aria-hidden="true">*</span>
+      Declaro que li e aceito os
+      <a href="/static/termos-de-adesao.pdf" target="_blank" rel="noopener">termos de adesão</a>
+      e autorizo o tratamento dos meus dados conforme a LGPD.
+    </label>
+  </div>
+  {% if errors.get('accepted_terms') %}
+  <p class="erro">{{ errors['accepted_terms'] }}</p>
+  {% endif %}
+</fieldset>
+
+<div class="acoes-form">
+  <button type="submit" class="btn btn--primario">Cadastrar e ir para o pagamento</button>
+</div>
+{% endmacro %}
+
+{% macro plan_picker(plans) %}
+<div class="planos">
+  {% for plan in plans %}
+  <div class="plano">
+    <input type="radio" id="plan_{{ plan.code }}" name="plan_code" value="{{ plan.code }}"
+           {% if form.get('plan_code') == plan.code or (not form.get('plan_code') and loop.first) %}checked{% endif %}
+           required>
+    <label class="plano__box" for="plan_{{ plan.code }}">
+      <span class="plano__nome">{{ plan.name }}</span>
+      <span class="plano__preco">R$ {{ plan.amount_brl }}<small>{{ plan.cycle_label }}</small></span>
+      <p class="plano__desc">{{ plan.description }}</p>
+      <ul class="plano__lista">
+        {% for benefit in plan.benefits %}<li>{{ benefit }}</li>{% endfor %}
+      </ul>
+    </label>
+  </div>
+  {% endfor %}
+</div>
+{% if errors.get('plan_code') %}<p class="erro">{{ errors['plan_code'] }}</p>{% endif %}
+{% endmacro %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <span class="olho">Associe-se</span>
+    <h1>Faça parte do <em>Clube de Criativos do Pará</em></h1>
+    <p>Uma rede que valoriza, registra e fomenta a criatividade paraense. Associe-se
+       como estudante, profissional ou empresa e conecte-se com quem move o mercado
+       criativo no Pará.</p>
+    <div class="hero__acoes">
+      <a class="btn btn--verde" href="#formulario">Quero me associar</a>
+      <a class="btn btn--fantasma" href="#beneficios">Ver benefícios</a>
+    </div>
+  </div>
+</section>
+
+<section class="secao" id="beneficios">
+  <div class="container">
+    <div class="secao__cabeca">
+      <div>
+        <span class="olho olho--escuro">Benefícios</span>
+        <h2>O que você recebe como associado</h2>
+      </div>
+    </div>
+    <div class="grade">
+      {% for benefit in benefits %}
+      <article class="card {{ benefit.color }}">
+        <h3>{{ benefit.title }}</h3>
+        <p>{{ benefit.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="secao" id="formulario">
+  <div class="container">
+    {% if errors.get('_general') %}
+    <div class="alerta">{{ errors['_general'] }}</div>
+    {% endif %}
+
+    <div class="abas" role="tablist" aria-label="Tipo de associação">
+      <button class="aba" role="tab" id="tab-pf" aria-controls="painel-pf"
+              aria-selected="{{ 'true' if tab == 'pf' else 'false' }}">
+        Sou pessoa física <span style="font-weight:400">(estudante / profissional)</span>
+      </button>
+      <button class="aba" role="tab" id="tab-pj" aria-controls="painel-pj"
+              aria-selected="{{ 'true' if tab == 'pj' else 'false' }}">
+        Sou empresa <span style="font-weight:400">(CNPJ)</span>
+      </button>
+    </div>
+
+    <!-- ========================= INDIVIDUAL ========================= -->
+    <div class="painel" id="painel-pf" role="tabpanel" aria-labelledby="tab-pf"
+         {% if tab != 'pf' %}hidden{% endif %}>
+      {% if errors and tab == 'pf' %}
+      <div class="alerta">Confira os campos destacados abaixo e envie novamente.</div>
+      {% endif %}
+
+      <form method="post" action="/associe-se/pf" novalidate>
+        <fieldset>
+          <legend>Tipo de associado</legend>
+          {{ plan_picker(individual_plans) }}
+        </fieldset>
+
+        <fieldset>
+          <legend>Informações pessoais</legend>
+          <div class="linha">
+            {{ field("name", "Nome completo", "c-6", required=True, sfx="pf",
+                     autocomplete="name") }}
+            {{ field("cpf", "CPF", "c-3", sfx="pf", inputmode="numeric", maxlength=14,
+                     hint="Somente números ou com pontuação.") }}
+            {{ field("id_card", "RG", "c-3", sfx="pf") }}
+            {{ field("birth_date", "Data de nascimento", "c-3", type="date", sfx="pf") }}
+            {{ select("gender", "Gênero", genders, "c-3", sfx="pf",
+                      blank="Prefiro não informar") }}
+            {{ select("chapter", "Regional APP", chapters, "c-3", sfx="pf",
+                      hint="Regional do CCPA mais próxima de você.") }}
+          </div>
+          <div class="linha" style="margin-top:1rem">
+            {{ field("linkedin", "LinkedIn", "c-4", type="url", sfx="pf") }}
+            {{ field("company", "Empresa em que trabalha / estuda", "c-4", sfx="pf") }}
+            {{ field("role", "Cargo / curso", "c-4", sfx="pf") }}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Informações de contato</legend>
+          <div class="linha">
+            {{ field("mobile", "Celular / WhatsApp", "c-4", type="tel", required=True,
+                     sfx="pf", inputmode="tel", maxlength=15, autocomplete="tel") }}
+            {{ field("secondary_phone", "Telefone secundário", "c-4", type="tel",
+                     sfx="pf", inputmode="tel", maxlength=15) }}
+          </div>
+          <div class="linha" style="margin-top:1rem">
+            {{ field("email", "E-mail principal", "c-6", type="email", required=True,
+                     sfx="pf", hint="Usado para cobrança, notificações e acesso.",
+                     autocomplete="email") }}
+            {{ field("secondary_email", "E-mail secundário", "c-6", type="email",
+                     sfx="pf") }}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Endereço residencial</legend>
+          <div class="linha">
+            {{ field("postal_code", "CEP", "c-3", sfx="pf", inputmode="numeric",
+                     maxlength=9, autocomplete="postal-code") }}
+            {{ field("street", "Endereço", "c-6", sfx="pf",
+                     autocomplete="address-line1") }}
+            {{ field("number", "Número", "c-3", sfx="pf") }}
+            {{ field("district", "Bairro", "c-4", sfx="pf") }}
+            {{ select("state", "UF", states, "c-2", sfx="pf", blank="--") }}
+            {{ field("city", "Cidade", "c-3", sfx="pf") }}
+            {{ field("address_extra", "Complemento", "c-3", sfx="pf") }}
+          </div>
+        </fieldset>
+
+        {{ credentials_block("pf") }}
+      </form>
+    </div>
+
+    <!-- ========================== COMPANY =========================== -->
+    <div class="painel" id="painel-pj" role="tabpanel" aria-labelledby="tab-pj"
+         {% if tab != 'pj' %}hidden{% endif %}>
+      {% if errors and tab == 'pj' %}
+      <div class="alerta">Confira os campos destacados abaixo e envie novamente.</div>
+      {% endif %}
+
+      <form method="post" action="/associe-se/pj" novalidate>
+        <fieldset>
+          <legend>Tipo de associado</legend>
+          {{ plan_picker(company_plans) }}
+        </fieldset>
+
+        <fieldset>
+          <legend>Informações cadastrais</legend>
+          <div class="linha">
+            {{ field("legal_name", "Razão social", "c-6", required=True, sfx="pj") }}
+            {{ field("trade_name", "Nome fantasia", "c-6", required=True, sfx="pj") }}
+            {{ field("cnpj", "CNPJ", "c-3", required=True, sfx="pj",
+                     inputmode="numeric", maxlength=18) }}
+            {{ field("state_registration", "Inscrição estadual", "c-3", sfx="pj") }}
+            {{ field("city_registration", "Inscrição municipal", "c-3", sfx="pj") }}
+            {{ select("chapter", "Regional APP", chapters, "c-3", required=True,
+                      sfx="pj", hint="Selecione a regional APP.") }}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Informações de contato</legend>
+          <div class="linha">
+            {{ field("mobile", "Celular / WhatsApp", "c-3", type="tel", sfx="pj",
+                     inputmode="tel", maxlength=15) }}
+            {{ field("secondary_phone", "Telefone secundário", "c-3", type="tel",
+                     sfx="pj", inputmode="tel", maxlength=15) }}
+            {{ field("email", "E-mail principal", "c-3", type="email", required=True,
+                     sfx="pj", hint="Usado para cobrança e notificações.") }}
+            {{ field("secondary_email", "E-mail secundário", "c-3", type="email",
+                     sfx="pj") }}
+            {{ field("website", "Site", "c-6", type="url", sfx="pj") }}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Endereço</legend>
+          <div class="linha">
+            {{ field("postal_code", "CEP", "c-3", sfx="pj", inputmode="numeric",
+                     maxlength=9) }}
+            {{ field("street", "Endereço", "c-5", sfx="pj") }}
+            {{ field("number", "Número", "c-2", sfx="pj") }}
+            {{ field("district", "Bairro", "c-2", sfx="pj") }}
+            {{ select("state", "UF", states, "c-2", sfx="pj", blank="--") }}
+            {{ field("city", "Cidade", "c-4", sfx="pj") }}
+            {{ field("address_extra", "Complemento", "c-6", sfx="pj") }}
+          </div>
+        </fieldset>
+
+        {{ credentials_block("pj") }}
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/form.js" defer></script>
+{% endblock %}

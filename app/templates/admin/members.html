@@ -1,0 +1,66 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Associados{% endblock %}
+
+{% block content %}
+<div class="admin__cabeca">
+  <div>
+    <h1>Associados</h1>
+    <p style="margin:0;color:var(--tinta-media)">
+      {{ members|length }} registro{{ 's' if members|length != 1 else '' }} exibido{{ 's' if members|length != 1 else '' }}.
+    </p>
+  </div>
+  <form method="get" action="/admin/associados" style="display:flex;gap:.5rem">
+    <label class="sr-only" for="status">Filtrar por situação</label>
+    <select id="status" name="status">
+      <option value="">Todas as situações</option>
+      {% for s in status_options %}
+      <option value="{{ s.name }}" {% if s.name == active_status %}selected{% endif %}>
+        {{ s.value|replace('_', ' ')|capitalize }}
+      </option>
+      {% endfor %}
+    </select>
+    <button class="btn btn--preto btn--pequeno" type="submit">Filtrar</button>
+  </form>
+</div>
+
+<div class="tabela-caixa">
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th><th>Tipo</th><th>Categoria</th><th>Regional</th>
+        <th>Contato</th><th>Situação</th><th>Entrou em</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in members %}
+      <tr>
+        <td><strong>{{ a.trade_name or a.name }}</strong></td>
+        <td>{{ 'Empresa' if a.entity_type.value == 'PJ' else 'Pessoa física' }}</td>
+        <td>{{ plans[a.plan_code].nome if a.plan_code in plans else a.plan_code }}</td>
+        <td>{{ a.chapter or '—' }}</td>
+        <td><a href="mailto:{{ a.email }}">{{ a.email }}</a></td>
+        <td>
+          <span class="pilula {{ '' if a.status.value == 'ATIVO' else 'pilula--cinza' }}">
+            {{ a.status.value|replace('_', ' ')|capitalize }}
+          </span>
+          {% if a.id in paid_ids %}<span class="pilula pilula--azul">pago</span>{% endif %}
+        </td>
+        <td style="white-space:nowrap">{{ a.created_at | short_date }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7" style="color:var(--tinta-fraca);padding:2rem;text-align:center">
+          Nenhum associado nesse filtro.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<p style="margin-top:1.2rem;font-size:.84rem;color:var(--tinta-fraca)">
+  Esta tela é só de leitura. Alterações de cadastro e cancelamentos passam pelo
+  associado ou pelo gateway de pagamento, para a trilha de auditoria da LGPD
+  ficar íntegra.
+</p>
+{% endblock %}

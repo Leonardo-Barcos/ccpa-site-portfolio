@@ -1,0 +1,63 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Notícias e colunas{% endblock %}
+
+{% block content %}
+<div class="admin__cabeca">
+  <h1>{{ 'Colunas' if kind.value == 'COLUMN' else 'Notícias' }}</h1>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+    <a class="btn btn--pequeno {{ 'btn--preto' if kind.value == 'NEWS' else 'btn--contorno' }}"
+       href="/admin/posts?tipo=NEWS">Notícias</a>
+    <a class="btn btn--pequeno {{ 'btn--preto' if kind.value == 'COLUMN' else 'btn--contorno' }}"
+       href="/admin/posts?tipo=COLUMN">Colunas</a>
+    <a class="btn btn--primario btn--pequeno" href="/admin/posts/novo?tipo={{ kind.value }}">
+      Nova {{ 'coluna' if kind.value == 'COLUMN' else 'notícia' }}
+    </a>
+  </div>
+</div>
+
+<div class="tabela-caixa">
+  <table>
+    <thead>
+      <tr>
+        <th>Título</th><th>Autor</th><th>Categoria</th>
+        <th>Situação</th><th>Data</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
+      <tr>
+        <td><strong>{{ post.title }}</strong></td>
+        <td>{{ post.author }}</td>
+        <td>{{ post.category or '—' }}</td>
+        <td>
+          <span class="pilula {{ '' if post.published else 'pilula--cinza' }}">
+            {{ 'No ar' if post.published else 'Rascunho' }}
+          </span>
+        </td>
+        <td style="white-space:nowrap">{{ (post.published_at or post.created_at) | short_date }}</td>
+        <td>
+          <div class="acoes">
+            <a class="btn btn--pequeno btn--contorno" href="/admin/posts/{{ post.id }}">Editar</a>
+            {% if post.published %}
+            <a class="btn btn--pequeno btn--contorno" target="_blank" rel="noopener"
+               href="/{{ 'colunas' if post.kind.value == 'COLUMN' else 'noticias' }}/{{ post.slug }}">Ver</a>
+            {% endif %}
+            <form method="post" action="/admin/posts/{{ post.id }}/excluir"
+                  data-confirmar="Excluir &quot;{{ post.title }}&quot;? Isso não tem volta.">
+              <input type="hidden" name="csrf" value="{{ csrf }}">
+              <button class="btn btn--pequeno btn--perigo" type="submit">Excluir</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" style="color:var(--tinta-fraca);padding:2rem;text-align:center">
+          Nada publicado ainda. Comece criando a primeira.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

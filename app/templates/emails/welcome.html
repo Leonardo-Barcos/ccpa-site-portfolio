@@ -1,0 +1,68 @@
+{% extends "emails/_base_email.html" %}
+{% block subject %}Falta 1 passo para sua associação{% endblock %}
+{% block preheader %}Conclua o pagamento e ative sua associação ao CCPA.{% endblock %}
+
+{% block body %}
+<h1 style="margin:0 0 14px;font-size:22px;line-height:1.25">
+  {{ member.first_name }}, recebemos seu cadastro!
+</h1>
+
+<p style="margin:0 0 18px;font-size:15px;line-height:1.6;color:#3c3c36">
+  Que bom ter você com a gente. Seu cadastro como
+  <strong>{{ plan.name }}</strong> foi registrado com sucesso.
+  Falta apenas <strong>um passo</strong> para ativar sua associação:
+  concluir o pagamento.
+</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+       style="background:#f7f7f3;border-radius:10px;margin:0 0 24px">
+  <tr><td style="padding:18px 20px;font-size:14px;line-height:1.8;color:#3c3c36">
+    <strong style="color:#171714">Resumo</strong><br>
+    Associado: {{ member.trade_name or member.name }}<br>
+    Modalidade: {{ plan.name }}<br>
+    Valor: <strong>R$ {{ plan.amount_brl }}{{ plan.cycle_label }}</strong><br>
+    {% if member.chapter %}Regional: {{ member.chapter }}<br>{% endif %}
+    Login: {{ member.login }}<br>
+    Protocolo: {{ member.id[:8]|upper }}
+  </td></tr>
+</table>
+
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 26px">
+  <tr><td style="background:#c63a1b;border-radius:8px">
+    <a href="{{ url_pagamento }}"
+       style="display:inline-block;padding:14px 30px;color:#ffffff;font-size:16px;
+              font-weight:700;text-decoration:none">
+      Pagar e ativar minha associação
+    </a>
+  </td></tr>
+</table>
+
+<p style="margin:0 0 26px;font-size:13px;color:#5c5c56;word-break:break-all">
+  Se o botão não funcionar, copie este endereço no navegador:<br>
+  <a href="{{ url_pagamento }}" style="color:#c63a1b">{{ url_pagamento }}</a>
+</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+       style="border:1px solid #e2e2dc;border-radius:10px;margin:0 0 24px">
+  <tr><td style="padding:16px 20px;font-size:13px;line-height:1.7;color:#3c3c36">
+    <strong style="color:#171714">Prefere transferência ou Pix?</strong><br>
+    Banco: {{ cfg.bank_name }}<br>
+    {% if cfg.bank_pix_key %}Chave Pix: {{ cfg.bank_pix_key }}<br>{% endif %}
+    Agência: {{ cfg.bank_agencia }} &middot; Operação: {{ cfg.bank_operacao }} &middot;
+    Conta: {{ cfg.bank_conta }}<br>
+    Titular: {{ cfg.bank_titular }}<br>
+    <span style="color:#5c5c56">Envie o comprovante para criativosdopara@gmail.com
+    informando o protocolo {{ member.id[:8]|upper }}.</span>
+  </td></tr>
+</table>
+
+<h2 style="margin:0 0 10px;font-size:16px">O que você passa a ter acesso</h2>
+<ul style="margin:0 0 22px;padding-left:20px;font-size:14px;line-height:1.8;color:#3c3c36">
+  {% for b in plan.benefits %}<li>{{ b }}</li>{% endfor %}
+</ul>
+
+<p style="margin:0;font-size:14px;color:#3c3c36">
+  Qualquer dúvida, é só responder este e-mail.<br>
+  <strong>Equipe CCPA</strong>
+</p>
+{% endblock %}

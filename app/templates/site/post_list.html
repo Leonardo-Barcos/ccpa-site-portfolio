@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block description %}{{ page_subtitle }}{% endblock %}
+
+{% block content %}
+<section class="hero hero--pagina">
+  <div class="container">
+    <span class="olho">{{ page_title }}</span>
+    <h1>{{ page_subtitle }}</h1>
+  </div>
+</section>
+
+<section class="secao">
+  <div class="container">
+    <form class="busca" method="get" action="{{ list_url }}" role="search">
+      <label class="sr-only" for="q">Buscar em {{ page_title|lower }}</label>
+      <input type="search" id="q" name="q" value="{{ search }}"
+             placeholder="Buscar por título ou assunto">
+      {% if categories %}
+      <label class="sr-only" for="category">Categoria</label>
+      <select id="category" name="category">
+        <option value="">Todas as categorias</option>
+        {% for c in categories %}
+        <option value="{{ c }}" {% if c == active_category %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+      <button class="btn btn--preto" type="submit">Buscar</button>
+      {% if search or active_category %}
+      <a class="btn btn--contorno" href="{{ list_url }}">Limpar</a>
+      {% endif %}
+    </form>
+
+    {% if posts %}
+    <div class="posts">
+      {% for post in posts %}
+      {% include "site/_post_card.html" %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="vazio">
+      <h3>Nada por aqui ainda</h3>
+      {% if search or active_category %}
+      <p>Nenhum resultado para essa busca. Tente outras palavras ou
+         <a href="{{ list_url }}">veja tudo</a>.</p>
+      {% else %}
+      <p>Assim que a primeira publicação sair, ela aparece aqui.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

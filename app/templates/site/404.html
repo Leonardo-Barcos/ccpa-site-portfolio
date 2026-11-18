@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Página não encontrada{% endblock %}
+
+{% block content %}
+<section class="secao">
+  <div class="container centro" style="padding:4rem 0">
+    <span class="olho olho--escuro">Erro 404</span>
+    <h1>Essa página não existe (ou não existe mais)</h1>
+    <p class="medida" style="margin-inline:auto;color:var(--tinta-media)">
+      Pode ser um link antigo ou um endereço digitado errado. Vale voltar para a
+      home ou procurar o que você queria nas notícias.
+    </p>
+    <div class="hero__acoes" style="justify-content:center">
+      <a class="btn btn--preto" href="/">Ir para a home</a>
+      <a class="btn btn--contorno" href="/noticias">Ver notícias</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

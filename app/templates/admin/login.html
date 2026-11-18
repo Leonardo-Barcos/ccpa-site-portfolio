@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Entrar no painel — CCPA</title>
+  <link rel="icon" href="/static/img/logo-ccpa.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/static/css/ccpa.css">
+</head>
+<body>
+  {# Projeto de portfólio — não é o site oficial do clube. #}
+  <div class="aviso-portfolio" role="note">
+    {{ site.PORTFOLIO_NOTICE }} Site oficial:
+    <a href="{{ site.OFFICIAL_SITE }}" target="_blank" rel="noopener">ccpara.com.br</a>
+  </div>
+  <div class="container">
+    <div class="login-caixa">
+      <img src="/static/img/logo-ccpa.png" alt="Clube de Criativos do Pará">
+      <h1 style="font-size:1.5rem">Painel do clube</h1>
+      <p style="color:var(--tinta-media);font-size:.93rem">
+        Área restrita à diretoria. Aqui se publica notícia, coluna e evento.
+      </p>
+
+      {% if error %}<div class="alerta">{{ error }}</div>{% endif %}
+
+      <form method="post" action="/admin/entrar">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <div class="campo" style="margin-bottom:1rem">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" required autocomplete="username" autofocus>
+        </div>
+        <div class="campo" style="margin-bottom:1.5rem">
+          <label for="password">Senha</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+        <button class="btn btn--primario" type="submit" style="width:100%">Entrar</button>
+      </form>
+
+      <p style="margin-top:1.5rem;font-size:.82rem;color:var(--tinta-fraca)">
+        Esqueceu a senha? Quem tem acesso ao servidor pode gerar uma nova com
+        <code>python scripts/criar_admin.py</code>.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

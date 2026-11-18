@@ -1,0 +1,74 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Visão geral{% endblock %}
+
+{% block content %}
+<div class="admin__cabeca">
+  <div>
+    <h1>Olá, {{ user.name.split(' ')[0] }}</h1>
+    <p style="margin:0;color:var(--tinta-media)">O que está acontecendo no clube hoje.</p>
+  </div>
+  <div class="acoes" style="display:flex;gap:.5rem;flex-wrap:wrap">
+    <a class="btn btn--primario btn--pequeno" href="/admin/posts/novo?tipo=NEWS">Nova notícia</a>
+    <a class="btn btn--contorno btn--pequeno" href="/admin/eventos/novo">Novo evento</a>
+  </div>
+</div>
+
+<div class="numeros" style="margin-bottom:2.5rem">
+  {% for rotulo, value, href in tiles %}
+  <div>
+    <b>{{ value }}</b>
+    <span><a href="{{ href }}" style="color:var(--tinta-fraca)">{{ label }}</a></span>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="grade grade--2" style="align-items:start">
+  <section>
+    <h2 style="font-size:1.15rem">Últimas adesões</h2>
+    <div class="tabela-caixa">
+      <table>
+        <thead>
+          <tr><th>Nome</th><th>Categoria</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for a in recent_members %}
+          <tr>
+            <td>{{ a.trade_name or a.name }}</td>
+            <td>{{ a.plan_code|capitalize }}</td>
+            <td>
+              <span class="pilula {{ 'pilula--cinza' if a.status.value != 'ATIVO' }}">
+                {{ a.status.value|replace('_', ' ')|capitalize }}
+              </span>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="3" style="color:var(--tinta-fraca)">Nenhuma adesão ainda.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 style="font-size:1.15rem">Mensagens recentes</h2>
+    <div class="tabela-caixa">
+      <table>
+        <thead>
+          <tr><th>De</th><th>Assunto</th><th>Quando</th></tr>
+        </thead>
+        <tbody>
+          {% for m in recent_messages %}
+          <tr>
+            <td>{{ m.name }}{% if not m.read %} <span class="pilula">nova</span>{% endif %}</td>
+            <td>{{ m.subject }}</td>
+            <td style="white-space:nowrap">{{ m.created_at | short_date }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="3" style="color:var(--tinta-fraca)">Caixa vazia.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}
